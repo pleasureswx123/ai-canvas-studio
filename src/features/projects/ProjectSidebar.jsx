@@ -12,7 +12,7 @@ export default function ProjectSidebar({
   return (
     <aside className="side-panel">
       <div className="brand">My Canvas Next</div>
-      <button type="button" className="primary-button" onClick={onCreate}>
+      <button type="button" className="primary-button" data-testid="create-project" onClick={onCreate}>
         <Plus size={16} />
         新建工程
       </button>
@@ -23,7 +23,7 @@ export default function ProjectSidebar({
       <div className="project-list">
         {projects.map((project) => (
           <div className={`project-row ${project.slug === currentProject?.slug ? 'active' : ''}`} key={project.slug}>
-            <button type="button" onClick={() => onOpen(project.slug)}>
+            <button type="button" data-testid={`open-project-${project.slug}`} onClick={() => onOpen(project.slug)}>
               <span className="project-cover">
                 {project.cover?.src ? <img src={project.cover.src} alt={project.name} /> : <Image size={16} />}
               </span>

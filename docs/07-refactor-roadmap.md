@@ -99,10 +99,10 @@
 - [x] 覆盖数据 schema 校验、legacy import、文件路径安全。当前覆盖 ProjectData schema、旧工程导入、旧素材库导入关键路径。
 - [x] 覆盖 Node API contract tests：独立端口启动 Node API，验证 health、create、save、invalid save、load、delete 契约。
 - [x] 覆盖 Python provider mock tests：验证 mock 图片/视频生成写入 assets、URL 规则和 slug 安全。
-- [ ] 增加前端 Playwright 冒烟测试：新建工程、添加节点、保存、刷新恢复。
+- [x] 增加前端 Playwright 冒烟测试：新建工程、添加节点、保存、刷新恢复。
 - [x] 增加 lint、build、test、smoke 一键脚本：`npm run verify` 串联 `lint`、`test`、`build`、`smoke:api`。
-- [ ] 增加 CI 文档，即使暂时不接 GitHub Actions 也明确命令。
-- [ ] 验收：任意重构 PR 必须通过 lint/build/test/smoke。
+- [x] 增加 CI 文档，即使暂时不接 GitHub Actions 也明确命令。当前记录在工程规范中，基础门禁用 `npm run verify`，完整浏览器门禁用 `npm run verify:e2e`。
+- [x] 验收：任意重构 PR 必须通过 lint/build/test/smoke。当前基础门禁为 `npm run verify`，涉及前端交互改动时追加 `npm run test:e2e`。
 
 ## Phase 7: 工程交付与旧项目下线
 

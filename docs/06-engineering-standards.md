@@ -25,3 +25,7 @@ Core canvas behavior, project save/load, material upload, and generation request
 ## Verification
 
 Use `npm run verify` before merging substantial changes. It runs lint, JavaScript tests, Python tests, production build, and API smoke checks in sequence.
+
+Use `npm run test:e2e` for browser-level smoke coverage. The current Playwright smoke creates a project, adds a text node, saves the canvas, reloads the app, reopens the project, and verifies the node content is restored.
+
+Use `npm run verify:e2e` before merging changes that affect canvas interactions, project persistence, routing, or the frontend build/runtime boundary. It runs the base verification gate first, then the Playwright browser smoke.

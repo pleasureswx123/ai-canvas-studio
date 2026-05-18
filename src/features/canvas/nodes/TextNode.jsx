@@ -30,6 +30,7 @@ export default function TextNode({ data }) {
       <Handle type="target" position={Position.Left} />
       <textarea
         className="text-node-textarea"
+        data-testid="text-node-textarea"
         value={data.text || ''}
         onChange={(event) => patch({ text: event.target.value })}
         placeholder="文本内容"

@@ -415,7 +415,9 @@ function Workbench() {
         <header className="topbar">
           <div>
             <strong>{currentProject?.name || '未打开工程'}</strong>
-            <span className={`save-pill ${saveStatusKind(saveStatus)}`}>{saveStatusLabel(saveStatus)}</span>
+            <span className={`save-pill ${saveStatusKind(saveStatus)}`} data-testid="save-status">
+              {saveStatusLabel(saveStatus)}
+            </span>
           </div>
           <div className="toolbar">
             <button type="button" onClick={() => addNode('imageNode')}>
@@ -426,7 +428,7 @@ function Workbench() {
               <Video size={16} />
               视频
             </button>
-            <button type="button" onClick={() => addNode('textNode')}>
+            <button type="button" data-testid="add-text-node" onClick={() => addNode('textNode')}>
               <Type size={16} />
               文本
             </button>
