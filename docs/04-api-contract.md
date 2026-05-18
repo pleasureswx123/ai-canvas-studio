@@ -34,8 +34,8 @@ or:
 ## Media Service
 
 - `GET /api/media-health`
-- `POST /api/generate-image` body `{ "prompt", "projectSlug" }`
-- `POST /api/generate-video` body `{ "prompt", "projectSlug" }`
+- `POST /api/generate-image` body `{ "prompt", "projectSlug", "provider", "model", "ratio", "size", "quality", "inputImages", "contextText" }`
+- `POST /api/generate-video` body `{ "prompt", "projectSlug", "provider", "model", "ratio", "resolution", "duration", "scenario", "inputImages", "firstFrameImage", "lastFrameImage", "contextText" }`
 - `GET /api/video-task/:taskId`
 
 Milestone 1 uses a local mock provider so the chain can be tested without vendor credentials.

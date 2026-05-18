@@ -79,7 +79,16 @@ const VIDEO_SETTING_FIELDS = [
 export default function VideoNode({ data }) {
   const nodeId = useNodeId();
   const asset = data.asset;
+  const imageOptions = data.upstreamImageOptions || [];
   const patch = (next) => data.onPatchNode?.(nodeId, next);
+
+  const selectedFrameImages = () => {
+    const firstFrame = imageOptions.find((item) => item.id === data.firstFrameNodeId)?.src;
+    const lastFrame = imageOptions.find((item) => item.id === data.lastFrameNodeId)?.src;
+    const ordered = [firstFrame, lastFrame].filter(Boolean);
+    const extras = (data.upstreamImages || []).filter((src) => !ordered.includes(src));
+    return [...ordered, ...extras];
+  };
 
   const pollTask = async (taskId) => {
     let latest = null;
@@ -106,7 +115,9 @@ export default function VideoNode({ data }) {
         resolution: data.resolution,
         duration: data.duration,
         scenario: data.scenario,
-        inputImages: data.upstreamImages || [],
+        inputImages: selectedFrameImages(),
+        firstFrameImage: imageOptions.find((item) => item.id === data.firstFrameNodeId)?.src || '',
+        lastFrameImage: imageOptions.find((item) => item.id === data.lastFrameNodeId)?.src || '',
         contextText: data.upstreamText || '',
       });
       patch({ taskId: submitted.taskId, status: submitted.status || 'PENDING' });
@@ -138,6 +149,38 @@ export default function VideoNode({ data }) {
         onInsert={(mention) => patch({ prompt: `${data.prompt || ''}${data.prompt ? ' ' : ''}${mention}` })}
       />
       <GenerationSettings fields={VIDEO_SETTING_FIELDS} values={data} onChange={patch} />
+      <div className="frame-reference-panel">
+        <label>
+          <span>首帧</span>
+          <select
+            value={data.firstFrameNodeId || ''}
+            disabled={imageOptions.length === 0}
+            onChange={(event) => patch({ firstFrameNodeId: event.target.value })}
+          >
+            <option value="">自动</option>
+            {imageOptions.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.title}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>尾帧</span>
+          <select
+            value={data.lastFrameNodeId || ''}
+            disabled={imageOptions.length === 0}
+            onChange={(event) => patch({ lastFrameNodeId: event.target.value })}
+          >
+            <option value="">不指定</option>
+            {imageOptions.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
       {data.upstreamSummary ? <div className="upstream-summary">{data.upstreamSummary}</div> : null}
       <NodeStatus error={data.error} status={data.status} />
       <NodeActions

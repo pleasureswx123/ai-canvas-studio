@@ -27,11 +27,26 @@ export function generateVideo({
   duration,
   scenario,
   inputImages = [],
+  firstFrameImage = '',
+  lastFrameImage = '',
   contextText = '',
 }) {
   return apiRequest('/api/generate-video', {
     method: 'POST',
-    body: { prompt, projectSlug, provider, model, ratio, resolution, duration, scenario, inputImages, contextText },
+    body: {
+      prompt,
+      projectSlug,
+      provider,
+      model,
+      ratio,
+      resolution,
+      duration,
+      scenario,
+      inputImages,
+      firstFrameImage,
+      lastFrameImage,
+      contextText,
+    },
   });
 }
 

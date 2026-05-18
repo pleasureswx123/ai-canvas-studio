@@ -101,6 +101,12 @@ class XunkeVideoProvider(MediaProvider):
             },
         }
         images = request.body.get("inputImages") or request.body.get("input_images") or request.body.get("images") or []
+        explicit_images = [
+            request.body.get("firstFrameImage") or request.body.get("first_frame_image"),
+            request.body.get("lastFrameImage") or request.body.get("last_frame_image"),
+        ]
+        if any(str(item or "").strip() for item in explicit_images):
+            images = [str(item).strip() for item in explicit_images if str(item or "").strip()]
         if isinstance(images, list) and images:
             payload["images"] = [str(item).strip() for item in images if str(item).strip()][:9]
         response = http_json(

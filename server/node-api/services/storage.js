@@ -96,7 +96,18 @@ export function normalizePersistedNode(node) {
   };
   if (typeof data.prompt === 'string') nextData.prompt = data.prompt;
   if (typeof data.text === 'string') nextData.text = data.text;
-  for (const key of ['provider', 'model', 'ratio', 'size', 'quality', 'resolution', 'duration', 'scenario']) {
+  for (const key of [
+    'provider',
+    'model',
+    'ratio',
+    'size',
+    'quality',
+    'resolution',
+    'duration',
+    'scenario',
+    'firstFrameNodeId',
+    'lastFrameNodeId',
+  ]) {
     if (typeof data[key] === 'string') nextData[key] = data[key];
   }
   if (data.asset && typeof data.asset === 'object') {

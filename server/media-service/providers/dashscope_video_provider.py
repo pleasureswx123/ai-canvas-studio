@@ -43,6 +43,12 @@ class DashScopeVideoProvider(MediaProvider):
         images = request.body.get("inputImages") or request.body.get("input_images") or []
         if not isinstance(images, list):
             images = []
+        explicit_images = [
+            request.body.get("firstFrameImage") or request.body.get("first_frame_image"),
+            request.body.get("lastFrameImage") or request.body.get("last_frame_image"),
+        ]
+        if any(str(item or "").strip() for item in explicit_images):
+            images = [str(item).strip() for item in explicit_images if str(item or "").strip()]
         media = []
         for index, image_url in enumerate(images[:2]):
             if isinstance(image_url, str) and image_url.strip():

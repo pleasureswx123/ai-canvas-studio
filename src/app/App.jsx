@@ -79,6 +79,13 @@ function collectUpstreamContext(nodeId, nodes, edges) {
     .map((node) => node.data?.asset)
     .filter((asset) => asset?.kind === 'image' && asset?.src)
     .map((asset) => asset.src);
+  const imageOptions = upstream
+    .filter((node) => node.data?.asset?.kind === 'image' && node.data.asset.src)
+    .map((node) => ({
+      id: node.id,
+      title: node.data?.title || node.id,
+      src: node.data.asset.src,
+    }));
   const textRefs = upstream
     .map((node) => node.data?.text || node.data?.prompt)
     .filter(Boolean)
@@ -86,6 +93,7 @@ function collectUpstreamContext(nodeId, nodes, edges) {
     .filter(Boolean);
   return {
     upstreamImages: imageRefs,
+    upstreamImageOptions: imageOptions,
     upstreamText: textRefs.join('\n\n'),
     upstreamSummary:
       upstream.length > 0 ? `上游引用：${imageRefs.length} 张图片，${textRefs.length} 段文本` : '',

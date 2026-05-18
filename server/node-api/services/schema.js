@@ -57,7 +57,18 @@ function validateNodeData(node, index, errors) {
   optionalString(data.title, `flow.nodes[${index}].data.title`, errors);
   optionalString(data.prompt, `flow.nodes[${index}].data.prompt`, errors);
   optionalString(data.text, `flow.nodes[${index}].data.text`, errors);
-  for (const key of ['provider', 'model', 'ratio', 'size', 'quality', 'resolution', 'duration', 'scenario']) {
+  for (const key of [
+    'provider',
+    'model',
+    'ratio',
+    'size',
+    'quality',
+    'resolution',
+    'duration',
+    'scenario',
+    'firstFrameNodeId',
+    'lastFrameNodeId',
+  ]) {
     optionalString(data[key], `flow.nodes[${index}].data.${key}`, errors);
   }
   optionalString(data.taskId, `flow.nodes[${index}].data.taskId`, errors);

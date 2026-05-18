@@ -35,11 +35,15 @@ Image/video nodes may also persist generation settings:
   "quality": "auto",
   "resolution": "720p",
   "duration": "5",
-  "scenario": "text"
+  "scenario": "text",
+  "firstFrameNodeId": "image_node_id",
+  "lastFrameNodeId": "image_node_id"
 }
 ```
 
 Runtime-only upstream context (`upstreamImages`, `upstreamText`, `upstreamSummary`) is derived from graph edges and is not persisted.
+
+For video nodes, `firstFrameNodeId` and `lastFrameNodeId` persist the user's explicit frame references. At runtime those node ids are resolved to image asset URLs and sent to the media provider as ordered first/last frame inputs.
 
 Image edit operations, such as crop and annotation, do not introduce a separate edit-history model in Phase 5. The browser exports the edited bitmap as a new project asset, then replaces the node `asset` reference with the uploaded file.
 
