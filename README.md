@@ -241,6 +241,7 @@ npm run verify:e2e
 - `docs/07-refactor-roadmap.md`：完整阶段任务清单。
 - `docs/09-media-providers.md`：AI provider 说明。
 - `docs/10-legacy-feature-matrix.md`：旧功能迁移、替代和废弃对照。
+- `docs/12-libtv-benchmark-and-gap.md`：LibTV 对标、专业视频创作能力差距和后续产品路线。
 
 ## Current Capability
 

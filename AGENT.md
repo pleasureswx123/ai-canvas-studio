@@ -167,3 +167,4 @@ npm run verify:e2e
 - `docs/04-api-contract.md`：接口变化。
 - `docs/05-data-model.md`：数据结构变化。
 - `docs/09-media-providers.md`：AI provider 或 key 变化。
+- `docs/12-libtv-benchmark-and-gap.md`：对标 LibTV、旧版能力和专业视频创作路线变化。
