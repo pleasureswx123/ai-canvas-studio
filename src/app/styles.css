@@ -98,14 +98,50 @@ button:disabled {
 .project-row > button:first-child {
   justify-content: flex-start;
   min-width: 0;
+  min-height: 52px;
   border: 0;
+  padding: 0;
   background: transparent;
 }
 
-.project-row span {
+.project-title {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.project-title strong,
+.project-title small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.project-title small {
+  color: #a1a1aa;
+  font-size: 11px;
+}
+
+.project-cover {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 36px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  color: #a1a1aa;
+  background: #18181b;
+}
+
+.project-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .icon-button {

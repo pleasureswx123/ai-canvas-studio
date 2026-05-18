@@ -65,6 +65,20 @@ function validateHistoryItem(item, index, errors) {
   validateAsset(item.asset, `history[${index}].asset`, errors);
 }
 
+function validateCover(cover, errors) {
+  if (cover == null) return;
+  if (!isPlainObject(cover)) {
+    errors.push('cover must be an object');
+    return;
+  }
+  optionalString(cover.src, 'cover.src', errors);
+  optionalString(cover.name, 'cover.name', errors);
+  optionalString(cover.updatedAt, 'cover.updatedAt', errors);
+  if (cover.kind != null && !ASSET_KINDS.has(cover.kind)) {
+    errors.push('cover.kind must be image or video');
+  }
+}
+
 function validateNodeData(node, index, errors) {
   const data = node.data;
   if (data == null) return;
@@ -133,6 +147,7 @@ export function validateProjectData(project) {
   if (typeof project.slug !== 'string' || !project.slug) errors.push('slug is required');
   if (typeof project.name !== 'string' || !project.name.trim()) errors.push('name is required');
   optionalString(project.updatedAt, 'updatedAt', errors);
+  validateCover(project.cover, errors);
   if (project.history != null && !Array.isArray(project.history)) errors.push('history must be an array');
   if (Array.isArray(project.history)) {
     project.history.forEach((item, index) => validateHistoryItem(item, index, errors));
@@ -177,6 +192,7 @@ export const projectDataSchemaDescription = {
     slug: 'string',
     name: 'string',
     updatedAt: 'ISO string',
+    cover: 'Asset | null',
     history: 'GenerationHistoryItem[]',
     flow: 'FlowData',
   },

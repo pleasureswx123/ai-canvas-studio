@@ -8,6 +8,7 @@
   "slug": "proj_x",
   "name": "Untitled",
   "updatedAt": "2026-05-18T00:00:00.000Z",
+  "cover": null,
   "history": [],
   "flow": {
     "nodes": [],
@@ -18,6 +19,8 @@
 ```
 
 The Node API validates this shape before saving. Invalid saves are rejected before `project_data.json` is overwritten.
+
+`cover` is an optional image/video asset summary for project lists. When absent, the Node API derives it from the latest image generation history entry or the first image node asset during save/list normalization.
 
 ## Node Data
 

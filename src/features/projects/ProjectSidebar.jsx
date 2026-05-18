@@ -1,4 +1,4 @@
-import { FolderOpen, Plus, Save, Trash2 } from 'lucide-react';
+import { FolderOpen, Image, Plus, Save, Trash2 } from 'lucide-react';
 
 export default function ProjectSidebar({
   projects,
@@ -24,8 +24,16 @@ export default function ProjectSidebar({
         {projects.map((project) => (
           <div className={`project-row ${project.slug === currentProject?.slug ? 'active' : ''}`} key={project.slug}>
             <button type="button" onClick={() => onOpen(project.slug)}>
-              <FolderOpen size={15} />
-              <span>{project.name}</span>
+              <span className="project-cover">
+                {project.cover?.src ? <img src={project.cover.src} alt={project.name} /> : <Image size={16} />}
+              </span>
+              <span className="project-title">
+                <strong>{project.name}</strong>
+                <small>
+                  <FolderOpen size={12} />
+                  {project.nodeCount || 0} 节点
+                </small>
+              </span>
             </button>
             <button type="button" className="icon-button" onClick={() => onRename(project)}>
               改名

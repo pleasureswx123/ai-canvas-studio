@@ -62,6 +62,7 @@ export function defaultProject(name, slug = slugifyName(name)) {
     slug,
     name: String(name || 'Untitled Project').trim() || 'Untitled Project',
     updatedAt: nowIso(),
+    cover: null,
     history: [],
     flow: {
       nodes: [],
@@ -79,6 +80,7 @@ export function normalizeProjectData(raw, fallback = {}) {
     slug: String(data.slug || fallback.slug || ''),
     name: String(data.name || fallback.name || 'Untitled Project'),
     updatedAt: nowIso(),
+    cover: normalizeCover(data.cover),
     history: Array.isArray(data.history) ? data.history.map(normalizeHistoryItem).filter(Boolean) : [],
     flow: {
       nodes: Array.isArray(flow.nodes) ? flow.nodes : [],
@@ -89,6 +91,33 @@ export function normalizeProjectData(raw, fallback = {}) {
           : { x: 0, y: 0, zoom: 1 },
     },
   };
+}
+
+export function normalizeCover(cover) {
+  if (!cover || typeof cover !== 'object') return null;
+  const asset = cover.asset && typeof cover.asset === 'object' ? cover.asset : cover;
+  const src = typeof asset.src === 'string' ? asset.src : '';
+  if (!src) return null;
+  return {
+    src,
+    name: typeof asset.name === 'string' ? asset.name : '',
+    kind: asset.kind === 'video' ? 'video' : 'image',
+    updatedAt: typeof cover.updatedAt === 'string' ? cover.updatedAt : nowIso(),
+  };
+}
+
+export function deriveProjectCover(project) {
+  const historyCover = (project.history || [])
+    .map((item) => item.asset)
+    .find((asset) => asset?.kind === 'image' && asset?.src);
+  if (historyCover) return normalizeCover({ asset: historyCover, updatedAt: nowIso() });
+
+  const nodeCover = (project.flow?.nodes || [])
+    .map((node) => node.data?.asset)
+    .find((asset) => asset?.kind === 'image' && asset?.src);
+  if (nodeCover) return normalizeCover({ asset: nodeCover, updatedAt: nowIso() });
+
+  return normalizeCover(project.cover);
 }
 
 export function normalizeHistoryItem(item) {
@@ -171,6 +200,7 @@ export function normalizeProjectForSave(raw, fallback = {}) {
     y: Number(project.flow.viewport?.y) || 0,
     zoom: Number(project.flow.viewport?.zoom) || 1,
   };
+  project.cover = normalizeCover(raw?.cover) || deriveProjectCover(project);
   return project;
 }
 
@@ -211,6 +241,7 @@ export async function listProjects() {
       name: data.name || entry.name,
       updatedAt: data.updatedAt || '',
       nodeCount: data.flow?.nodes?.length || 0,
+      cover: normalizeCover(data.cover) || deriveProjectCover(normalizeProjectData(data, { slug: entry.name })),
     });
   }
   return projects.sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
