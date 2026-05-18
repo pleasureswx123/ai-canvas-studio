@@ -233,6 +233,7 @@ npm run verify:e2e
 
 ## Docs
 
+- `docs/11-user-guide.md`：给小白用户看的系统使用手册。
 - `AGENT.md`：给 AI agent 和开发者的一眼看懂工程地图。
 - `MIGRATION.md`：旧项目数据迁移步骤、备份和失败恢复。
 - `OPERATIONS.md`：环境变量、端口、启动、日志和常见错误。

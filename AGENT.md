@@ -162,6 +162,7 @@ npm run verify:e2e
 
 - `AGENT.md`：项目事实、架构、数据、流程、AI provider、约束变化。
 - `README.md`：启动、验证、使用入口变化。
+- `docs/11-user-guide.md`：面向小白用户的使用流程、功能解释和操作步骤变化。
 - `docs/07-refactor-roadmap.md`：任务状态变化。
 - `docs/04-api-contract.md`：接口变化。
 - `docs/05-data-model.md`：数据结构变化。
