@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ImagePlus } from 'lucide-react';
 import { generateImage } from '../../generation/generationApi.js';
 import { uploadProjectAsset } from '../../projects/projectApi.js';
+import { featureFlags } from '../../../shared/config/featureFlags.js';
 import GenerationSettings from '../components/GenerationSettings.jsx';
 import MediaPreview from '../components/MediaPreview.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
@@ -154,30 +155,32 @@ export default function ImageNode({ data }) {
     >
       <NodeHandles />
       <MediaPreview asset={asset} title={data.title} placeholder="Image" kind="image" />
-      <div className="image-edit-panel">
-        <div className="image-edit-buttons">
-          <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={() => handleCrop(1)}>
-            裁剪 1:1
-          </button>
-          <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={() => handleCrop(16 / 9)}>
-            16:9
-          </button>
-          <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={() => handleCrop(9 / 16)}>
-            9:16
-          </button>
+      {featureFlags.imageEdit ? (
+        <div className="image-edit-panel">
+          <div className="image-edit-buttons">
+            <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={() => handleCrop(1)}>
+              裁剪 1:1
+            </button>
+            <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={() => handleCrop(16 / 9)}>
+              16:9
+            </button>
+            <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={() => handleCrop(9 / 16)}>
+              9:16
+            </button>
+          </div>
+          <div className="image-annotation-row">
+            <input
+              value={annotationText}
+              disabled={!asset?.src || data.status === 'RUNNING'}
+              onChange={(event) => setAnnotationText(event.target.value)}
+              placeholder="标注文字"
+            />
+            <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={handleAnnotate}>
+              标注
+            </button>
+          </div>
         </div>
-        <div className="image-annotation-row">
-          <input
-            value={annotationText}
-            disabled={!asset?.src || data.status === 'RUNNING'}
-            onChange={(event) => setAnnotationText(event.target.value)}
-            placeholder="标注文字"
-          />
-          <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={handleAnnotate}>
-            标注
-          </button>
-        </div>
-      </div>
+      ) : null}
       <PromptPanel value={data.prompt} onChange={(prompt) => patch({ prompt })} placeholder="图片提示词" />
       <MentionPicker
         options={data.mentionOptions}

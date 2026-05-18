@@ -2,6 +2,7 @@ import { useNodeId } from '@xyflow/react';
 import { Video } from 'lucide-react';
 import { generateVideo, getVideoTask } from '../../generation/generationApi.js';
 import { clipProjectVideo } from '../../projects/projectApi.js';
+import { featureFlags } from '../../../shared/config/featureFlags.js';
 import GenerationSettings from '../components/GenerationSettings.jsx';
 import MediaPreview from '../components/MediaPreview.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
@@ -181,63 +182,67 @@ export default function VideoNode({ data }) {
         onInsert={(mention) => patch({ prompt: `${data.prompt || ''}${data.prompt ? ' ' : ''}${mention}` })}
       />
       <GenerationSettings fields={VIDEO_SETTING_FIELDS} values={data} onChange={patch} />
-      <div className="frame-reference-panel">
-        <label>
-          <span>首帧</span>
-          <select
-            value={data.firstFrameNodeId || ''}
-            disabled={imageOptions.length === 0}
-            onChange={(event) => patch({ firstFrameNodeId: event.target.value })}
-          >
-            <option value="">自动</option>
-            {imageOptions.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span>尾帧</span>
-          <select
-            value={data.lastFrameNodeId || ''}
-            disabled={imageOptions.length === 0}
-            onChange={(event) => patch({ lastFrameNodeId: event.target.value })}
-          >
-            <option value="">不指定</option>
-            {imageOptions.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.title}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div className="video-clip-panel">
-        <label>
-          <span>开始秒</span>
-          <input
-            type="number"
-            min="0"
-            step="0.1"
-            value={data.clipStart || '0'}
-            onChange={(event) => patch({ clipStart: event.target.value })}
-          />
-        </label>
-        <label>
-          <span>结束秒</span>
-          <input
-            type="number"
-            min="0.1"
-            step="0.1"
-            value={data.clipEnd || '5'}
-            onChange={(event) => patch({ clipEnd: event.target.value })}
-          />
-        </label>
-        <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={handleClip}>
-          剪辑
-        </button>
-      </div>
+      {featureFlags.videoFrames ? (
+        <div className="frame-reference-panel">
+          <label>
+            <span>首帧</span>
+            <select
+              value={data.firstFrameNodeId || ''}
+              disabled={imageOptions.length === 0}
+              onChange={(event) => patch({ firstFrameNodeId: event.target.value })}
+            >
+              <option value="">自动</option>
+              {imageOptions.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>尾帧</span>
+            <select
+              value={data.lastFrameNodeId || ''}
+              disabled={imageOptions.length === 0}
+              onChange={(event) => patch({ lastFrameNodeId: event.target.value })}
+            >
+              <option value="">不指定</option>
+              {imageOptions.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      ) : null}
+      {featureFlags.videoClip ? (
+        <div className="video-clip-panel">
+          <label>
+            <span>开始秒</span>
+            <input
+              type="number"
+              min="0"
+              step="0.1"
+              value={data.clipStart || '0'}
+              onChange={(event) => patch({ clipStart: event.target.value })}
+            />
+          </label>
+          <label>
+            <span>结束秒</span>
+            <input
+              type="number"
+              min="0.1"
+              step="0.1"
+              value={data.clipEnd || '5'}
+              onChange={(event) => patch({ clipEnd: event.target.value })}
+            />
+          </label>
+          <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={handleClip}>
+            剪辑
+          </button>
+        </div>
+      ) : null}
       {data.upstreamSummary ? <div className="upstream-summary">{data.upstreamSummary}</div> : null}
       <NodeStatus error={data.error} status={data.status} />
       <NodeActions

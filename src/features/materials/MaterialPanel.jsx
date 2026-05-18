@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { History, Search, ShieldCheck, ShieldQuestion, Trash2 } from 'lucide-react';
+import { featureFlags } from '../../shared/config/featureFlags.js';
 
 function draggableAssetFromHistory(item) {
   return {
@@ -60,23 +61,26 @@ export default function MaterialPanel({
       return matchesKind && matchesCategory && matchesQuery;
     });
   }, [category, kind, materials, query]);
+  const resolvedTab = featureFlags.projectHistory ? activeTab : 'materials';
 
   return (
     <aside className="side-panel right-panel">
       <div className="panel-heading">
-        <h2>{activeTab === 'materials' ? '素材库' : '生成历史'}</h2>
-        {activeTab === 'materials' ? <button type="button" onClick={onRefresh}>刷新</button> : null}
+        <h2>{resolvedTab === 'materials' ? '素材库' : '生成历史'}</h2>
+        {resolvedTab === 'materials' ? <button type="button" onClick={onRefresh}>刷新</button> : null}
       </div>
-      <div className="panel-tabs">
-        <button type="button" className={activeTab === 'materials' ? 'active' : ''} onClick={() => setActiveTab('materials')}>
-          素材
-        </button>
-        <button type="button" className={activeTab === 'history' ? 'active' : ''} onClick={() => setActiveTab('history')}>
-          <History size={15} />
-          历史
-        </button>
-      </div>
-      {activeTab === 'materials' ? (
+      {featureFlags.projectHistory ? (
+        <div className="panel-tabs">
+          <button type="button" className={activeTab === 'materials' ? 'active' : ''} onClick={() => setActiveTab('materials')}>
+            素材
+          </button>
+          <button type="button" className={activeTab === 'history' ? 'active' : ''} onClick={() => setActiveTab('history')}>
+            <History size={15} />
+            历史
+          </button>
+        </div>
+      ) : null}
+      {resolvedTab === 'materials' && featureFlags.materialFilters ? (
         <div className="material-filters">
           <label className="material-search">
             <Search size={15} />
@@ -99,7 +103,7 @@ export default function MaterialPanel({
           </div>
         </div>
       ) : null}
-      {activeTab === 'materials' ? (
+      {resolvedTab === 'materials' ? (
         <div className="material-list">
           {filteredMaterials.map((item) => (
             <div
@@ -121,14 +125,14 @@ export default function MaterialPanel({
               <div className="material-meta">
                 <strong>{item.name}</strong>
                 <span>{item.category}</span>
-                {item.kind === 'image' ? (
+                {item.kind === 'image' && featureFlags.materialReview ? (
                   <span className={`seedance-review-status status-${String(item.seedanceFaceReview?.status || 'empty').toLowerCase()}`}>
                     {item.seedanceFaceReview?.status === 'approved' ? <ShieldCheck size={12} /> : <ShieldQuestion size={12} />}
                     {seedanceReviewLabel(item.seedanceFaceReview)}
                   </span>
                 ) : null}
               </div>
-              {item.kind === 'image' ? (
+              {item.kind === 'image' && featureFlags.materialReview ? (
                 <button
                   type="button"
                   className="icon-button"

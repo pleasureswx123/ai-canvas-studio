@@ -89,7 +89,7 @@
 - [x] 素材库分类筛选和搜索：支持名称/分类关键词、分类下拉、图片/视频类型筛选。
 - [x] Seedance 主体/人物素材审核能力：素材库图片可记录/触发审核，结果写入 `seedanceFaceReview`。
 - [x] 素材库数据迁移脚本：旧 `material-library/library_data.json` 到新 schema，支持 preview/write/replace。
-- [ ] 验收：高级能力可独立关闭，不影响核心画布和工程保存。
+- [x] 验收：高级能力可通过 feature flags 独立关闭，不影响核心画布和工程保存。
 
 ## Phase 6: 测试与质量门禁
 
