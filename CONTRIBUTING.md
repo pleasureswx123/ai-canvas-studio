@@ -70,3 +70,7 @@ npm run verify:e2e
 ```
 
 真实 provider 改动还需要在本地 `.env.local` 配好对应 key 后，至少跑通一个图片或视频生成链路。
+
+## Documentation Sync
+
+功能、需求、架构、配置、数据模型、AI provider 或开发流程发生变化时，必须同步更新 `AGENT.md`。如果变化影响启动、验证或交付，也要同步更新 `README.md`、`OPERATIONS.md` 或对应 `docs/` 文件。

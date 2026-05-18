@@ -24,14 +24,16 @@ The frontend may also pass `provider` in the request body. If omitted, the regis
 
 ## Supported Providers
 
-| Provider | Capability | Status |
-| --- | --- | --- |
-| `mock` | image + video | default, no credentials |
-| `openai_image` | image | OpenAI-compatible `/images/generations` |
-| `vectorengine_image` | image | OpenAI-compatible `/chat/completions` image relay |
-| `ark_video` | video task submit/query | Ark task API, downloads successful result into project assets when a URL is returned |
-| `dashscope_video` | video task submit/query | DashScope `wan2.7-i2v`, requires at least one input image |
-| `xunke_video` | video task submit/query | Xunke/KKAI Seedance-compatible video API |
+| Provider | Capability | Status | Key source |
+| --- | --- | --- | --- |
+| `mock` | image + video | default, no credentials | none |
+| `openai_image` | image | OpenAI-compatible `/images/generations` | OpenAI API keys page or compatible gateway console |
+| `vectorengine_image` | image | OpenAI-compatible `/chat/completions` image relay | VectorEngine console |
+| `ark_video` | video task submit/query | Ark task API, downloads successful result into project assets when a URL is returned | Volcengine Ark console |
+| `dashscope_video` | video task submit/query | DashScope `wan2.7-i2v`, requires at least one input image | Alibaba Cloud Model Studio / DashScope console |
+| `xunke_video` | video task submit/query | Xunke/KKAI Seedance-compatible video API | Xunke/KKAI service console |
+
+Run `npm run env:check` after changing `.env.local`. If a real provider is enabled but its key is empty, the check must fail before the app is used.
 
 ## Environment
 

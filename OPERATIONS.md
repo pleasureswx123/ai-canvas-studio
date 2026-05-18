@@ -29,6 +29,12 @@ npx playwright install chromium
 Copy-Item .env.example .env.local
 ```
 
+检查环境变量：
+
+```bash
+npm run env:check
+```
+
 本地默认使用 mock provider：
 
 ```env
@@ -42,6 +48,8 @@ MEDIA_PROVIDER=mock
 - `VECTORENGINE_API_KEY`
 - `DASHSCOPE_API_KEY`
 - `XUNKE_API_KEY`
+
+Key 获取渠道和项目内职责见 `README.md` 的 `AI Model And Provider Matrix`。如果 `MEDIA_PROVIDER` 包含真实 provider 但对应 key 为空，`npm run env:check` 会失败。
 
 ## Ports
 
@@ -84,6 +92,7 @@ npm run verify:e2e
 单项命令：
 
 ```bash
+npm run env:check
 npm run lint
 npm test
 npm run build

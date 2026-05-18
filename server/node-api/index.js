@@ -2,7 +2,10 @@ import http from 'node:http';
 import { handleMaterialRoute } from './routes/materials.js';
 import { handleProjectRoute } from './routes/projects.js';
 import { handleTextRoute } from './routes/text.js';
+import { loadProjectEnv } from './services/env.js';
 import { ensureBaseDirs } from './services/storage.js';
+
+loadProjectEnv();
 
 const PORT = Number(process.env.NODE_API_PORT || 8787);
 
