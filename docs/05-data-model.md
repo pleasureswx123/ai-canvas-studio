@@ -41,7 +41,9 @@ Image/video nodes may also persist generation settings:
   "duration": "5",
   "scenario": "text",
   "firstFrameNodeId": "image_node_id",
-  "lastFrameNodeId": "image_node_id"
+  "lastFrameNodeId": "image_node_id",
+  "clipStart": "0",
+  "clipEnd": "5"
 }
 ```
 
@@ -50,6 +52,8 @@ Runtime-only upstream context (`upstreamImages`, `upstreamText`, `upstreamSummar
 For video nodes, `firstFrameNodeId` and `lastFrameNodeId` persist the user's explicit frame references. At runtime those node ids are resolved to image asset URLs and sent to the media provider as ordered first/last frame inputs.
 
 Image edit operations, such as crop and annotation, do not introduce a separate edit-history model in Phase 5. The browser exports the edited bitmap as a new project asset, then replaces the node `asset` reference with the uploaded file.
+
+Video clip operations persist lightweight `clipStart` and `clipEnd` UI values on the video node. The Node API calls local `ffmpeg`, writes the clipped MP4 to the current project `assets/`, and replaces the node `asset` reference with the new video.
 
 Mention references use the lightweight persisted text form:
 

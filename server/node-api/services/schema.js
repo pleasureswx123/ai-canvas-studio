@@ -100,6 +100,8 @@ function validateNodeData(node, index, errors) {
     'scenario',
     'firstFrameNodeId',
     'lastFrameNodeId',
+    'clipStart',
+    'clipEnd',
   ]) {
     optionalString(data[key], `flow.nodes[${index}].data.${key}`, errors);
   }

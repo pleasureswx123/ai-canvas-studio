@@ -1,6 +1,7 @@
 import { useNodeId } from '@xyflow/react';
 import { Video } from 'lucide-react';
 import { generateVideo, getVideoTask } from '../../generation/generationApi.js';
+import { clipProjectVideo } from '../../projects/projectApi.js';
 import GenerationSettings from '../components/GenerationSettings.jsx';
 import MediaPreview from '../components/MediaPreview.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
@@ -143,6 +144,27 @@ export default function VideoNode({ data }) {
     }
   }
 
+  async function handleClip() {
+    if (!data.projectSlug) return patch({ error: '请先打开或创建工程' });
+    if (!asset?.src) return patch({ error: '请先生成或上传视频' });
+    patch({ status: 'RUNNING', error: '' });
+    try {
+      const clipped = await clipProjectVideo({
+        slug: data.projectSlug,
+        src: asset.src,
+        start: data.clipStart || '0',
+        end: data.clipEnd || '5',
+      });
+      patch({
+        asset: { src: clipped.src, name: clipped.name, kind: 'video' },
+        status: 'SUCCEEDED',
+        error: '',
+      });
+    } catch (error) {
+      patch({ status: 'FAILED', error: error.message });
+    }
+  }
+
   return (
     <NodeShell
       icon={<Video size={16} />}
@@ -190,6 +212,31 @@ export default function VideoNode({ data }) {
             ))}
           </select>
         </label>
+      </div>
+      <div className="video-clip-panel">
+        <label>
+          <span>开始秒</span>
+          <input
+            type="number"
+            min="0"
+            step="0.1"
+            value={data.clipStart || '0'}
+            onChange={(event) => patch({ clipStart: event.target.value })}
+          />
+        </label>
+        <label>
+          <span>结束秒</span>
+          <input
+            type="number"
+            min="0.1"
+            step="0.1"
+            value={data.clipEnd || '5'}
+            onChange={(event) => patch({ clipEnd: event.target.value })}
+          />
+        </label>
+        <button type="button" disabled={!asset?.src || data.status === 'RUNNING'} onClick={handleClip}>
+          剪辑
+        </button>
       </div>
       {data.upstreamSummary ? <div className="upstream-summary">{data.upstreamSummary}</div> : null}
       <NodeStatus error={data.error} status={data.status} />

@@ -158,6 +158,8 @@ export function normalizePersistedNode(node) {
     'scenario',
     'firstFrameNodeId',
     'lastFrameNodeId',
+    'clipStart',
+    'clipEnd',
   ]) {
     if (typeof data[key] === 'string') nextData[key] = data[key];
   }

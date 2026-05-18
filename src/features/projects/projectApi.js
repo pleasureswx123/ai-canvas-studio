@@ -29,3 +29,11 @@ export function uploadProjectAsset(slug, file) {
   const fileName = safeAssetName(file);
   return uploadBinary(`/api/project/asset/${encodeURIComponent(slug)}/${encodeURIComponent(fileName)}`, file);
 }
+
+export function clipProjectVideo({ slug, src, start, end }) {
+  return apiRequest('/api/project/clip-video', {
+    method: 'POST',
+    timeoutMs: 120000,
+    body: { slug, src, start, end },
+  });
+}

@@ -20,6 +20,7 @@ or:
 - `GET /api/project/load?slug=<slug>`
 - `PUT /api/project/save` body `{ "slug": "...", "data": ProjectData }`
 - `POST /api/project/rename` body `{ "slug": "...", "name": "New name" }`
+- `POST /api/project/clip-video` body `{ "slug", "src", "start", "end" }`
 - `DELETE /api/project/delete?slug=<slug>`
 - `PUT /api/project/asset/:slug/:filename`
 - `GET /api/project/media/:slug/:filename`
