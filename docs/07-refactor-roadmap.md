@@ -97,10 +97,10 @@
 
 - [x] 引入单元测试框架，优先覆盖纯函数和 API client。当前使用 Node 内置 `node:test`，避免新增依赖。
 - [x] 覆盖数据 schema 校验、legacy import、文件路径安全。当前覆盖 ProjectData schema、旧工程导入、旧素材库导入关键路径。
-- [ ] 覆盖 Node API contract tests。
-- [ ] 覆盖 Python provider mock tests。
+- [x] 覆盖 Node API contract tests：独立端口启动 Node API，验证 health、create、save、invalid save、load、delete 契约。
+- [x] 覆盖 Python provider mock tests：验证 mock 图片/视频生成写入 assets、URL 规则和 slug 安全。
 - [ ] 增加前端 Playwright 冒烟测试：新建工程、添加节点、保存、刷新恢复。
-- [ ] 增加 lint、build、test、smoke 一键脚本。当前已有独立 `lint`、`test`、`build`、`smoke:api`。
+- [x] 增加 lint、build、test、smoke 一键脚本：`npm run verify` 串联 `lint`、`test`、`build`、`smoke:api`。
 - [ ] 增加 CI 文档，即使暂时不接 GitHub Actions 也明确命令。
 - [ ] 验收：任意重构 PR 必须通过 lint/build/test/smoke。
 

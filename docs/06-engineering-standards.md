@@ -21,3 +21,7 @@ VITE_FEATURE_PROJECT_HISTORY=1
 ```
 
 Core canvas behavior, project save/load, material upload, and generation requests must continue to work when any advanced flag is disabled.
+
+## Verification
+
+Use `npm run verify` before merging substantial changes. It runs lint, JavaScript tests, Python tests, production build, and API smoke checks in sequence.
