@@ -54,6 +54,7 @@
 - 是否引入无法关闭的高级能力。
 - 是否缺少错误展示或失败恢复。
 - 是否缺少必要测试或文档更新。
+- 是否引入浏览器原生 `prompt`、`confirm`、`alert`。产品内必须使用应用级弹窗或 Notice。
 
 ## Required Verification
 

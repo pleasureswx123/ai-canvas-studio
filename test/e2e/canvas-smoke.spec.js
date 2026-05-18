@@ -19,12 +19,10 @@ test('creates project, saves text node, and restores after reload', async ({ pag
   const nodeText = `Playwright saved text ${Date.now()}`;
   let projectSlug = '';
 
-  page.on('dialog', async (dialog) => {
-    await dialog.accept(projectName);
-  });
-
   await page.goto('/');
   await page.getByTestId('create-project').click();
+  await page.getByTestId('input-dialog-field').fill(projectName);
+  await page.getByTestId('input-dialog-confirm').click();
   await expect(page.getByText(projectName)).toBeVisible();
 
   const projects = await apiRequest('/api/project/list');

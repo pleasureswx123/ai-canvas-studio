@@ -15,6 +15,7 @@
 - API key 不提交到 Git，真实 key 放 `.env.local`。
 - 不能把运行数据、用户工程、生成素材、日志、测试结果提交进仓库。
 - 前端组件不能散落原始 `fetch`，统一走 feature API 或 shared API client。
+- 不能使用浏览器原生 `prompt`、`confirm`、`alert`；必须使用应用内弹窗、表单或 Notice。
 - 保存到 `project_data.json` 的只能是领域数据，不能保存 hover、focus、menu、selection 等临时 UI 状态。
 - 功能或需求有变动时，必须同步更新 `AGENT.md`、README 或相关 docs。
 - commit 信息使用中文。

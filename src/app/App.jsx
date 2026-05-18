@@ -30,6 +30,7 @@ import SaveMaterialModal from '../features/materials/SaveMaterialModal.jsx';
 import { inferAssetKind } from '../shared/utils/files.js';
 import EmptyCanvasState from '../features/canvas/components/EmptyCanvasState.jsx';
 import ConfirmDialog from '../shared/ui/ConfirmDialog.jsx';
+import InputDialog from '../shared/ui/InputDialog.jsx';
 import Notice from '../shared/ui/Notice.jsx';
 import { saveStatusKind, saveStatusLabel } from '../features/projects/saveStatus.js';
 
@@ -110,6 +111,8 @@ function Workbench() {
   const [notice, setNotice] = useState(null);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [pendingDeleteSlug, setPendingDeleteSlug] = useState(null);
+  const [projectNameDialog, setProjectNameDialog] = useState(null);
+  const [seedanceReviewItem, setSeedanceReviewItem] = useState(null);
   const [materialDraft, setMaterialDraft] = useState(null);
   const [uploadState, setUploadState] = useState('idle');
   const autosaveTimerRef = useRef(null);
@@ -245,18 +248,30 @@ function Workbench() {
   const selectedNodeIds = useMemo(() => nodes.filter((node) => node.selected).map((node) => node.id), [nodes]);
 
   const handleCreateProject = async () => {
-    const name = window.prompt('工程名称', 'Untitled Project');
-    if (!name) return;
+    setProjectNameDialog({ mode: 'create', initialValue: 'Untitled Project' });
+  };
+
+  const confirmProjectName = async (name) => {
+    const dialog = projectNameDialog;
+    setProjectNameDialog(null);
+    if (!dialog || !name) return;
     try {
-      const project = await createProject(name);
-      setCurrentProject(project);
-      setNodes([]);
-      setEdges([]);
-      setViewport({ x: 0, y: 0, zoom: 1 });
-      lastSavedSignatureRef.current = JSON.stringify(makeProjectPayload(project, [], [], { x: 0, y: 0, zoom: 1 }));
-      setSaveStatus('saved');
-      await refreshProjects();
-      showNotice('success', '工程已创建');
+      if (dialog.mode === 'rename') {
+        const renamed = await renameProject(dialog.project.slug, name);
+        if (dialog.project.slug === currentProject?.slug) setCurrentProject(renamed);
+        await refreshProjects();
+        showNotice('success', '工程已重命名');
+      } else {
+        const project = await createProject(name);
+        setCurrentProject(project);
+        setNodes([]);
+        setEdges([]);
+        setViewport({ x: 0, y: 0, zoom: 1 });
+        lastSavedSignatureRef.current = JSON.stringify(makeProjectPayload(project, [], [], { x: 0, y: 0, zoom: 1 }));
+        setSaveStatus('saved');
+        await refreshProjects();
+        showNotice('success', '工程已创建');
+      }
     } catch (error) {
       showNotice('error', error.message);
     }
@@ -307,15 +322,7 @@ function Workbench() {
   }, [currentProject, edges, getViewport, handleSaveProject, nodes]);
 
   const handleRenameProject = async (project) => {
-    const name = window.prompt('新工程名称', project.name);
-    if (!name) return;
-    try {
-      const renamed = await renameProject(project.slug, name);
-      if (project.slug === currentProject?.slug) setCurrentProject(renamed);
-      await refreshProjects();
-    } catch (error) {
-      showNotice('error', error.message);
-    }
+    setProjectNameDialog({ mode: 'rename', project, initialValue: project.name });
   };
 
   const handleDeleteProject = async (slug) => {
@@ -488,15 +495,7 @@ function Workbench() {
           await refreshMaterials();
         }}
         onReviewMaterial={async (item) => {
-          const assetRef = window.prompt('输入已审核的 asset:// 引用；留空则尝试调用 Seedance 审核服务', '');
-          if (assetRef == null) return;
-          try {
-            await reviewSeedanceMaterial(item.id, assetRef ? { assetRef } : {});
-            await refreshMaterials();
-            showNotice('success', 'Seedance 审核状态已更新');
-          } catch (error) {
-            showNotice('error', error.message);
-          }
+          setSeedanceReviewItem(item);
         }}
         onDropMaterial={addMaterialNode}
       />
@@ -510,6 +509,39 @@ function Workbench() {
         confirmText="删除"
         onCancel={() => setPendingDeleteSlug(null)}
         onConfirm={confirmDeleteProject}
+      />
+      <InputDialog
+        open={Boolean(projectNameDialog)}
+        title={projectNameDialog?.mode === 'rename' ? '重命名工程' : '新建工程'}
+        label="工程名称"
+        initialValue={projectNameDialog?.initialValue || ''}
+        placeholder="输入工程名称"
+        confirmText={projectNameDialog?.mode === 'rename' ? '保存' : '创建'}
+        onCancel={() => setProjectNameDialog(null)}
+        onConfirm={confirmProjectName}
+      />
+      <InputDialog
+        open={Boolean(seedanceReviewItem)}
+        title="Seedance 素材审核"
+        label="已审核 asset 引用"
+        description="可输入 asset:// 引用；留空则调用当前配置的审核服务。"
+        initialValue=""
+        placeholder="asset://..."
+        confirmText="开始审核"
+        allowEmpty
+        onCancel={() => setSeedanceReviewItem(null)}
+        onConfirm={async (assetRef) => {
+          const item = seedanceReviewItem;
+          setSeedanceReviewItem(null);
+          if (!item) return;
+          try {
+            await reviewSeedanceMaterial(item.id, assetRef ? { assetRef } : {});
+            await refreshMaterials();
+            showNotice('success', 'Seedance 审核状态已更新');
+          } catch (error) {
+            showNotice('error', error.message);
+          }
+        }}
       />
       <SaveMaterialModal
         draft={materialDraft}
