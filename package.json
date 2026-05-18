@@ -10,6 +10,7 @@
     "dev:media": "python server/media-service/app.py",
     "build": "vite build",
     "lint": "eslint .",
+    "test": "node --test",
     "preview": "vite preview",
     "smoke:api": "node scripts/smoke-api.mjs",
     "legacy:preview": "node scripts/legacy-import.mjs --source",

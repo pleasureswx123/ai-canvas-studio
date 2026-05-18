@@ -46,7 +46,7 @@ function inferKind(item) {
   return 'image';
 }
 
-function normalizeLegacyLibrary(raw) {
+export function normalizeLegacyLibrary(raw) {
   if (Array.isArray(raw)) return raw;
   if (Array.isArray(raw?.items)) return raw.items;
   return [];
@@ -61,7 +61,7 @@ function targetFileName(item, report) {
   return fileName;
 }
 
-function convertItem(item, report) {
+export function convertLegacyMaterialItem(item, report) {
   if (!item || typeof item !== 'object') {
     report.skippedItems += 1;
     return null;
@@ -167,7 +167,7 @@ async function main() {
   if (!legacy) throw new Error(`Legacy material library not found: ${args.source}`);
   const legacyItems = normalizeLegacyLibrary(legacy);
   report.totalItems = legacyItems.length;
-  const converted = legacyItems.map((item) => convertItem(item, report)).filter(Boolean);
+  const converted = legacyItems.map((item) => convertLegacyMaterialItem(item, report)).filter(Boolean);
   report.convertedItems = converted.length;
 
   const publicItems = converted.map(stripInternal);
