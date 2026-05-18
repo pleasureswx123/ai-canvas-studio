@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import os
+import time
+import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -43,6 +45,27 @@ def _read_body(handler: BaseHTTPRequestHandler) -> dict:
         return {}
     raw = handler.rfile.read(length).decode("utf-8")
     return json.loads(raw) if raw else {}
+
+
+def _review_seedance_face_asset(body: dict) -> dict:
+    image = str(body.get("image") or body.get("url") or "").strip()
+    if not image:
+        raise ProviderError("invalid_request", "image cannot be empty", 400)
+    if str(os.environ.get("SEEDANCE_REVIEW_MODE") or "").strip().lower() == "mock":
+        asset_id = f"mock-{int(time.time())}-{uuid.uuid4().hex[:8]}"
+        return {
+            "status": "approved",
+            "asset_id": asset_id,
+            "asset_ref": f"asset://{asset_id}",
+            "asset_status": "Active",
+            "message": "Mock Seedance review approved",
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+    raise ProviderError(
+        "missing_review_provider",
+        "Seedance review provider is not configured. Set SEEDANCE_REVIEW_MODE=mock for local testing or record an approved asset:// reference manually.",
+        501,
+    )
 
 
 class MediaHandler(BaseHTTPRequestHandler):
@@ -92,6 +115,9 @@ class MediaHandler(BaseHTTPRequestHandler):
                 result = REGISTRY.video_provider(str(body.get("provider") or "")).submit_video_task(request)
                 TASKS[result["taskId"]] = result
                 _ok(self, {"taskId": result["taskId"], "status": result["status"]})
+                return
+            if parsed.path == "/api/seedance-face-review":
+                _ok(self, _review_seedance_face_asset(body))
                 return
             _error(self, 404, "Not found")
         except ProviderError as error:

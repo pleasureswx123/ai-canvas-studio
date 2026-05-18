@@ -81,6 +81,7 @@ function convertItem(item, report) {
     kind: inferKind(item),
     src: `/api/material-library/media/${encodeURIComponent(fileName)}`,
     createdAt: typeof item.createdAt === 'string' ? item.createdAt : new Date().toISOString(),
+    seedanceFaceReview: normalizeSeedanceFaceReview(item.seedanceFaceReview),
     legacy: {
       assetPath: String(sourceAsset),
       coverPath: item.coverPath ? String(item.coverPath) : '',
@@ -94,6 +95,20 @@ function convertItem(item, report) {
       to: path.join(targetAssetsDir, fileName),
       fileName,
     },
+  };
+}
+
+function normalizeSeedanceFaceReview(review) {
+  if (!review || typeof review !== 'object') return null;
+  const status = String(review.status || '').trim().toLowerCase();
+  if (!status) return null;
+  return {
+    status,
+    assetId: String(review.assetId || review.asset_id || '').trim(),
+    assetRef: String(review.assetRef || review.asset_ref || '').trim(),
+    assetStatus: String(review.assetStatus || review.asset_status || '').trim(),
+    message: String(review.message || '').trim(),
+    updatedAt: String(review.updatedAt || review.updated_at || '').trim(),
   };
 }
 

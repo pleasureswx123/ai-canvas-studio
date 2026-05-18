@@ -90,9 +90,19 @@ Generation history is project-scoped and capped to the latest 100 entries. It is
   "category": "其他",
   "kind": "image",
   "src": "/api/material-library/media/file.png",
+  "seedanceFaceReview": {
+    "status": "approved",
+    "assetId": "asset-xxx",
+    "assetRef": "asset://asset-xxx",
+    "assetStatus": "Active",
+    "message": "Review approved",
+    "updatedAt": "2026-05-18T00:00:00.000Z"
+  },
   "createdAt": "2026-05-18T00:00:00.000Z"
 }
 ```
+
+`seedanceFaceReview` is optional and only meaningful for image/person reference materials. It can be populated by recording an approved `asset://` reference manually or by a configured Seedance review service.
 
 ## Legacy Mapping
 

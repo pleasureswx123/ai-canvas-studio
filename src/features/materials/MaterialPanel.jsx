@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { History, Search, Trash2 } from 'lucide-react';
+import { History, Search, ShieldCheck, ShieldQuestion, Trash2 } from 'lucide-react';
 
 function draggableAssetFromHistory(item) {
   return {
@@ -21,7 +21,22 @@ function formatHistoryTime(value) {
   }).format(new Date(value));
 }
 
-export default function MaterialPanel({ materials, historyItems = [], onRefresh, onDelete, onDropMaterial }) {
+function seedanceReviewLabel(review) {
+  const status = String(review?.status || '').toLowerCase();
+  if (status === 'approved') return '已审核';
+  if (status === 'processing') return '审核中';
+  if (status === 'failed') return '失败';
+  return '未审核';
+}
+
+export default function MaterialPanel({
+  materials,
+  historyItems = [],
+  onRefresh,
+  onDelete,
+  onDropMaterial,
+  onReviewMaterial,
+}) {
   const [activeTab, setActiveTab] = useState('materials');
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
@@ -106,7 +121,23 @@ export default function MaterialPanel({ materials, historyItems = [], onRefresh,
               <div className="material-meta">
                 <strong>{item.name}</strong>
                 <span>{item.category}</span>
+                {item.kind === 'image' ? (
+                  <span className={`seedance-review-status status-${String(item.seedanceFaceReview?.status || 'empty').toLowerCase()}`}>
+                    {item.seedanceFaceReview?.status === 'approved' ? <ShieldCheck size={12} /> : <ShieldQuestion size={12} />}
+                    {seedanceReviewLabel(item.seedanceFaceReview)}
+                  </span>
+                ) : null}
               </div>
+              {item.kind === 'image' ? (
+                <button
+                  type="button"
+                  className="icon-button"
+                  title="Seedance 审核"
+                  onClick={() => onReviewMaterial?.(item)}
+                >
+                  <ShieldCheck size={15} />
+                </button>
+              ) : null}
               <button type="button" className="icon-button" onClick={() => onDelete(item.id)}>
                 <Trash2 size={15} />
               </button>

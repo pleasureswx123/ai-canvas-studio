@@ -610,7 +610,7 @@ button:disabled {
 
 .material-item {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-columns: 72px minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: center;
   padding: 8px;
@@ -649,6 +649,33 @@ button:disabled {
 .empty-state {
   color: #a1a1aa;
   font-size: 12px;
+}
+
+.seedance-review-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  margin-top: 3px;
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: #d4d4d8;
+  background: #3f3f46;
+}
+
+.seedance-review-status.status-approved {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.18);
+}
+
+.seedance-review-status.status-failed {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.seedance-review-status.status-processing {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.2);
 }
 
 .history-item {

@@ -6,6 +6,7 @@ The media service exposes stable frontend routes and chooses provider adapters i
 
 - `POST /api/generate-image`
 - `POST /api/generate-video`
+- `POST /api/seedance-face-review`
 - `GET /api/video-task/:taskId`
 - `GET /api/media-health`
 
@@ -57,11 +58,24 @@ XUNKE_API_KEY=
 XUNKE_BASE_URL=https://api.xunkecloud.cn
 XUNKE_VIDEO_MODEL_SEEDANCE_2_0=seed-2-480p
 XUNKE_VIDEO_MODEL_SEEDANCE_2_0_720P=seed-2-720p
+
+SEEDANCE_REVIEW_MODE=
 ```
 
 `openai_image` also accepts `OPENAI_API_KEY`, `GPT_IMAGE_2_API_KEY`, `VECTORENGINE_API_KEY`, or `ARK_API_KEY` as fallback keys. This keeps migration flexible while the team decides the final vendor matrix.
 
 `dashscope_video` is image-to-video only in this phase. The request body must include `inputImages` or `input_images` with at least one public image URL.
+
+## Seedance Material Review
+
+Material review is exposed through `POST /api/material-library/seedance-review/:id`.
+The Node API stores the normalized result in `MaterialItem.seedanceFaceReview`.
+
+Current supported paths:
+
+- Manual: provide an approved `assetRef` such as `asset://asset-xxx`; the material is marked `approved`.
+- Local test: set `SEEDANCE_REVIEW_MODE=mock`, then the media service returns a mock approved review.
+- Real provider: keep the API contract and replace `/api/seedance-face-review` with a configured provider adapter.
 
 ## Error Contract
 

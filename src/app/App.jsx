@@ -25,7 +25,7 @@ import {
 } from '../features/projects/projectApi.js';
 import ProjectSidebar from '../features/projects/ProjectSidebar.jsx';
 import MaterialPanel from '../features/materials/MaterialPanel.jsx';
-import { deleteMaterial, listMaterials, saveMaterial } from '../features/materials/materialApi.js';
+import { deleteMaterial, listMaterials, reviewSeedanceMaterial, saveMaterial } from '../features/materials/materialApi.js';
 import SaveMaterialModal from '../features/materials/SaveMaterialModal.jsx';
 import { inferAssetKind } from '../shared/utils/files.js';
 import EmptyCanvasState from '../features/canvas/components/EmptyCanvasState.jsx';
@@ -484,6 +484,17 @@ function Workbench() {
         onDelete={async (id) => {
           await deleteMaterial(id);
           await refreshMaterials();
+        }}
+        onReviewMaterial={async (item) => {
+          const assetRef = window.prompt('输入已审核的 asset:// 引用；留空则尝试调用 Seedance 审核服务', '');
+          if (assetRef == null) return;
+          try {
+            await reviewSeedanceMaterial(item.id, assetRef ? { assetRef } : {});
+            await refreshMaterials();
+            showNotice('success', 'Seedance 审核状态已更新');
+          } catch (error) {
+            showNotice('error', error.message);
+          }
         }}
         onDropMaterial={addMaterialNode}
       />

@@ -29,6 +29,7 @@ or:
 
 - `GET /api/material-library/list`
 - `POST /api/material-library/save` body `{ "name", "category", "src", "kind" }`
+- `POST /api/material-library/seedance-review/:id` body `{ "assetRef" }` or `{}`
 - `DELETE /api/material-library/item/:id`
 - `GET /api/material-library/media/:filename`
 

@@ -14,3 +14,11 @@ export function saveMaterial(payload) {
 export function deleteMaterial(id) {
   return apiRequest(`/api/material-library/item/${encodeURIComponent(id)}`, { method: 'DELETE' });
 }
+
+export function reviewSeedanceMaterial(id, payload = {}) {
+  return apiRequest(`/api/material-library/seedance-review/${encodeURIComponent(id)}`, {
+    method: 'POST',
+    timeoutMs: 120000,
+    body: payload,
+  });
+}
