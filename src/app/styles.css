@@ -483,6 +483,23 @@ button:disabled {
   font-size: 18px;
 }
 
+.panel-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.panel-tabs button {
+  min-width: 0;
+}
+
+.panel-tabs button.active {
+  border-color: #14b8a6;
+  color: #ccfbf1;
+  background: rgba(20, 184, 166, 0.18);
+}
+
 .material-filters {
   display: grid;
   gap: 8px;
@@ -567,6 +584,21 @@ button:disabled {
 .empty-state {
   color: #a1a1aa;
   font-size: 12px;
+}
+
+.history-item {
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.history-item p {
+  display: -webkit-box;
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: #d4d4d8;
+  font-size: 12px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .notice {

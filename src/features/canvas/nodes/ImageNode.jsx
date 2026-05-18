@@ -92,7 +92,17 @@ export default function ImageNode({ data }) {
         inputImages: data.upstreamImages || [],
         contextText: data.upstreamText || '',
       });
-      patch({ asset: { src: result.src, name: result.savedFilename, kind: 'image' }, status: 'SUCCEEDED' });
+      const nextAsset = { src: result.src, name: result.savedFilename, kind: 'image' };
+      patch({ asset: nextAsset, status: 'SUCCEEDED' });
+      data.onRecordHistory?.({
+        nodeId,
+        nodeTitle: data.title,
+        kind: 'image',
+        prompt: data.prompt,
+        provider: data.provider || 'mock',
+        model: data.model,
+        asset: nextAsset,
+      });
     } catch (error) {
       patch({ status: 'FAILED', error: error.message });
     }

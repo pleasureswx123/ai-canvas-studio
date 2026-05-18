@@ -53,6 +53,7 @@ function stripRuntimeNodeData(nodes) {
 function makeProjectPayload(project, nodes, edges, viewport) {
   return {
     ...project,
+    history: Array.isArray(project?.history) ? project.history : [],
     flow: {
       nodes: stripRuntimeNodeData(nodes),
       edges,
@@ -192,6 +193,25 @@ function Workbench() {
     setSaveStatus('dirty');
   }, []);
 
+  const recordGenerationHistory = useCallback((entry) => {
+    setCurrentProject((project) => {
+      if (!project || !entry?.asset?.src) return project;
+      const item = {
+        id: `hist_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+        nodeId: entry.nodeId || '',
+        nodeTitle: entry.nodeTitle || '未命名节点',
+        kind: entry.kind === 'video' ? 'video' : 'image',
+        prompt: entry.prompt || '',
+        provider: entry.provider || '',
+        model: entry.model || '',
+        asset: entry.asset,
+        createdAt: new Date().toISOString(),
+      };
+      return { ...project, history: [item, ...(project.history || [])].slice(0, 100) };
+    });
+    setSaveStatus('dirty');
+  }, []);
+
   const runtimeNodes = useMemo(
     () =>
       nodes.map((node) => ({
@@ -207,9 +227,19 @@ function Workbench() {
           onPatchNode: patchNodeData,
           onDeleteNode: deleteNodesById,
           onDuplicateNode: duplicateNodesById,
+          onRecordHistory: recordGenerationHistory,
         },
       })),
-    [currentProject?.slug, deleteNodesById, duplicateNodesById, edges, handleSaveMaterial, nodes, patchNodeData]
+    [
+      currentProject?.slug,
+      deleteNodesById,
+      duplicateNodesById,
+      edges,
+      handleSaveMaterial,
+      nodes,
+      patchNodeData,
+      recordGenerationHistory,
+    ]
   );
 
   const selectedNodeIds = useMemo(() => nodes.filter((node) => node.selected).map((node) => node.id), [nodes]);
@@ -449,6 +479,7 @@ function Workbench() {
       </main>
       <MaterialPanel
         materials={materials}
+        historyItems={currentProject?.history || []}
         onRefresh={refreshMaterials}
         onDelete={async (id) => {
           await deleteMaterial(id);

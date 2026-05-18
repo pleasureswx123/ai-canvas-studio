@@ -123,10 +123,20 @@ export default function VideoNode({ data }) {
       patch({ taskId: submitted.taskId, status: submitted.status || 'PENDING' });
       const task = await pollTask(submitted.taskId);
       if (task.status === 'FAILED') throw new Error(task.error || '视频生成失败');
+      const nextAsset = { src: task.src, name: task.savedFilename, kind: 'video' };
       patch({
         taskId: submitted.taskId,
         status: task.status,
-        asset: { src: task.src, name: task.savedFilename, kind: 'video' },
+        asset: nextAsset,
+      });
+      data.onRecordHistory?.({
+        nodeId,
+        nodeTitle: data.title,
+        kind: 'video',
+        prompt: data.prompt,
+        provider: data.provider || 'mock',
+        model: data.model,
+        asset: nextAsset,
       });
     } catch (error) {
       patch({ status: 'FAILED', error: error.message });

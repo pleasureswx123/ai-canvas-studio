@@ -8,6 +8,7 @@
   "slug": "proj_x",
   "name": "Untitled",
   "updatedAt": "2026-05-18T00:00:00.000Z",
+  "history": [],
   "flow": {
     "nodes": [],
     "edges": [],
@@ -54,6 +55,24 @@ Mention references use the lightweight persisted text form:
 ```
 
 At runtime, referenced node text and image assets are added to the same generation context as connected upstream nodes.
+
+## GenerationHistoryItem
+
+```json
+{
+  "id": "hist_x",
+  "nodeId": "node_id",
+  "nodeTitle": "Image 1",
+  "kind": "image",
+  "prompt": "Prompt text",
+  "provider": "mock",
+  "model": "seed-2-720p",
+  "asset": { "src": "/api/project/media/proj/file.png", "name": "file.png", "kind": "image" },
+  "createdAt": "2026-05-18T00:00:00.000Z"
+}
+```
+
+Generation history is project-scoped and capped to the latest 100 entries. It is separate from the reusable material library; history records what happened in a project, while materials are curated assets.
 
 ## MaterialItem
 

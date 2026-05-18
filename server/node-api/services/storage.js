@@ -62,6 +62,7 @@ export function defaultProject(name, slug = slugifyName(name)) {
     slug,
     name: String(name || 'Untitled Project').trim() || 'Untitled Project',
     updatedAt: nowIso(),
+    history: [],
     flow: {
       nodes: [],
       edges: [],
@@ -78,6 +79,7 @@ export function normalizeProjectData(raw, fallback = {}) {
     slug: String(data.slug || fallback.slug || ''),
     name: String(data.name || fallback.name || 'Untitled Project'),
     updatedAt: nowIso(),
+    history: Array.isArray(data.history) ? data.history.map(normalizeHistoryItem).filter(Boolean) : [],
     flow: {
       nodes: Array.isArray(flow.nodes) ? flow.nodes : [],
       edges: Array.isArray(flow.edges) ? flow.edges : [],
@@ -86,6 +88,26 @@ export function normalizeProjectData(raw, fallback = {}) {
           ? flow.viewport
           : { x: 0, y: 0, zoom: 1 },
     },
+  };
+}
+
+export function normalizeHistoryItem(item) {
+  if (!item || typeof item !== 'object') return null;
+  const asset = item.asset && typeof item.asset === 'object' ? item.asset : {};
+  return {
+    id: String(item.id || makeId('hist')),
+    nodeId: typeof item.nodeId === 'string' ? item.nodeId : '',
+    nodeTitle: typeof item.nodeTitle === 'string' ? item.nodeTitle : '',
+    kind: item.kind === 'video' ? 'video' : 'image',
+    prompt: typeof item.prompt === 'string' ? item.prompt : '',
+    provider: typeof item.provider === 'string' ? item.provider : '',
+    model: typeof item.model === 'string' ? item.model : '',
+    asset: {
+      src: typeof asset.src === 'string' ? asset.src : '',
+      name: typeof asset.name === 'string' ? asset.name : '',
+      kind: asset.kind === 'video' ? 'video' : 'image',
+    },
+    createdAt: typeof item.createdAt === 'string' ? item.createdAt : nowIso(),
   };
 }
 
@@ -135,6 +157,7 @@ export function normalizePersistedNode(node) {
 
 export function normalizeProjectForSave(raw, fallback = {}) {
   const project = normalizeProjectData(raw, fallback);
+  project.history = Array.isArray(raw?.history) ? raw.history.map(normalizeHistoryItem).filter(Boolean).slice(0, 100) : [];
   project.flow.nodes = project.flow.nodes.map(normalizePersistedNode);
   project.flow.edges = project.flow.edges.map((edge) => ({
     id: String(edge?.id || `${edge?.source || 'source'}-${edge?.target || 'target'}`),

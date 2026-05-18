@@ -47,6 +47,24 @@ function validateAsset(asset, field, errors) {
   }
 }
 
+function validateHistoryItem(item, index, errors) {
+  if (!isPlainObject(item)) {
+    errors.push(`history[${index}] must be an object`);
+    return;
+  }
+  optionalString(item.id, `history[${index}].id`, errors);
+  optionalString(item.nodeId, `history[${index}].nodeId`, errors);
+  optionalString(item.nodeTitle, `history[${index}].nodeTitle`, errors);
+  optionalString(item.prompt, `history[${index}].prompt`, errors);
+  optionalString(item.provider, `history[${index}].provider`, errors);
+  optionalString(item.model, `history[${index}].model`, errors);
+  optionalString(item.createdAt, `history[${index}].createdAt`, errors);
+  if (item.kind != null && !ASSET_KINDS.has(item.kind)) {
+    errors.push(`history[${index}].kind must be image or video`);
+  }
+  validateAsset(item.asset, `history[${index}].asset`, errors);
+}
+
 function validateNodeData(node, index, errors) {
   const data = node.data;
   if (data == null) return;
@@ -115,6 +133,10 @@ export function validateProjectData(project) {
   if (typeof project.slug !== 'string' || !project.slug) errors.push('slug is required');
   if (typeof project.name !== 'string' || !project.name.trim()) errors.push('name is required');
   optionalString(project.updatedAt, 'updatedAt', errors);
+  if (project.history != null && !Array.isArray(project.history)) errors.push('history must be an array');
+  if (Array.isArray(project.history)) {
+    project.history.forEach((item, index) => validateHistoryItem(item, index, errors));
+  }
 
   if (!isPlainObject(project.flow)) {
     errors.push('flow must be an object');
@@ -155,6 +177,7 @@ export const projectDataSchemaDescription = {
     slug: 'string',
     name: 'string',
     updatedAt: 'ISO string',
+    history: 'GenerationHistoryItem[]',
     flow: 'FlowData',
   },
   FlowNode: {
