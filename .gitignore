@@ -1,0 +1,12 @@
+/node_modules/
+/dist/
+/.idea/
+.env
+.env.local
+/projects/
+/material-library/assets/
+/material-library/library_data.json
+/logs/
+*.log
+__pycache__/
+*.pyc
